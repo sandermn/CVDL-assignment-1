@@ -14,10 +14,21 @@ def pre_process_images(X: np.ndarray):
         f"X.shape[1]: {X.shape[1]}, should be 784"
     # TODO implement this function (Task 2a)
 
+    """
     X = [[(2*i/255 - 1) for i in x] for x in X]
-    X = [X.append(1) for i in X]
+    X = [x.append(1) for x in X]
     X = np.array(X)
+    """
+    
+    # normalize all values between -1.0 and 1.0
+    X = [[(2*i/255 - 1) for i in x] for x in X]
 
+    # bias trick
+    for image in X:
+        image.append(1.0)
+
+    X = np.array(X)
+    
     return X
 
 
@@ -39,7 +50,7 @@ class BinaryModel:
 
     def __init__(self):
         # Define number of input nodes
-        self.I = None
+        self.I = 785
         self.w = np.zeros((self.I, 1))
         self.grad = None
 
@@ -52,9 +63,12 @@ class BinaryModel:
         """
         # TODO implement this function (Task 2a)
 
-        
-
-        return None
+        y = np.array()
+        print('4')
+        for x in X:
+            y.append(1/(1+np.exp(-np.dot(self.w, x))))
+        print('5')
+        return y
 
     def backward(self, X: np.ndarray, outputs: np.ndarray, targets: np.ndarray) -> None:
         """
