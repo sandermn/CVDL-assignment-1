@@ -13,6 +13,11 @@ def pre_process_images(X: np.ndarray):
     assert X.shape[1] == 784,\
         f"X.shape[1]: {X.shape[1]}, should be 784"
     # TODO implement this function (Task 2a)
+
+    X = [[(2*i/255 - 1) for i in x] for x in X]
+    X = [X.append(1) for i in X]
+    X = np.array(X)
+
     return X
 
 
@@ -46,6 +51,9 @@ class BinaryModel:
             y: output of model with shape [batch size, 1]
         """
         # TODO implement this function (Task 2a)
+
+        
+
         return None
 
     def backward(self, X: np.ndarray, outputs: np.ndarray, targets: np.ndarray) -> None:
