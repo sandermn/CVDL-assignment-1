@@ -72,6 +72,11 @@ class BaseTrainer:
             accuracy={}
         )
 
+        # variables for task 2d
+        counter = 0
+        times = 10
+        lowest_val_loss = float('inf')
+
         global_step = 0
         for epoch in range(num_epochs):
             train_loader = utils.batch_loader(
@@ -90,5 +95,13 @@ class BaseTrainer:
 
                     # TODO (Task 2d): Implement early stopping here.
                     # You can access the validation loss in val_history["loss"]
+                    counter += 1
+                    if(val_history["loss"][global_step] < lowest_val_loss):
+                        lowest_val_loss = val_history["loss"][global_step]
+                        counter = 0
+                    if(counter > times):
+                        print(f'Training stopped after {epoch} epochs')
+                        return train_history, val_history
+
                 global_step += 1
         return train_history, val_history
