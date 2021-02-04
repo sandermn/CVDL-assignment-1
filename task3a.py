@@ -12,14 +12,10 @@ def cross_entropy_loss(targets: np.ndarray, outputs: np.ndarray):
     Returns:
         Cross entropy error (float)
     """
-
+    # TODO implement this function (Task 3a)
     assert targets.shape == outputs.shape,\
         f"Targets shape: {targets.shape}, outputs: {outputs.shape}"
-
-    cel =  np.sum((-np.sum(targets * np.log(outputs), axis=1)))
-    cel = (1 / targets.shape[0]) * np.sum(cel)
-    return cel
-
+    raise NotImplementedError
 
 
 class SoftmaxModel:
@@ -31,6 +27,7 @@ class SoftmaxModel:
         self.num_outputs = 10
         self.w = np.zeros((self.I, self.num_outputs))
         self.grad = 2
+
         self.l2_reg_lambda = l2_reg_lambda
 
     def forward(self, X: np.ndarray) -> np.ndarray:
@@ -41,8 +38,12 @@ class SoftmaxModel:
             y: output of model with shape [batch size, num_outputs]
         """
 
-        return np.divide(np.exp(X.dot(self.w)),np.transpose(np.array([np.sum(np.exp(X.dot(self.w)), axis=1)])))
+        z = X.dot(self.w)
+        y = np.zeros((X.shape[0], self.num_outputs))
+        sum = np.transpose(np.array([np.sum(np.exp(z), axis=1)]))
 
+        y= np.devide(np.exp(z),sum)
+        return y
 
 
 
@@ -58,9 +59,11 @@ class SoftmaxModel:
         # which is defined in the constructor.
         assert targets.shape == outputs.shape,\
             f"Output shape: {outputs.shape}, targets: {targets.shape}"
+        self.grad = np.zeros_like(self.w)
+        assert self.grad.shape == self.w.shape,\
+             f"Grad shape: {self.grad.shape}, w: {self.w.shape}"
 
-        self.grad = (1 / targets.shape[0])*np.transpose(X).dot(-(targets - outputs))
-
+        self.grad = (1 / targets.shape[0]) * np.sum(-(targets - outputs) * X, axis=0).reshape((self.I, 1)) + 2*self.l2_reg_lambda*self.w
 
     def zero_grad(self) -> None:
         self.grad = None
@@ -74,14 +77,16 @@ def one_hot_encode(Y: np.ndarray, num_classes: int):
     Returns:
         Y: shape [Num examples, num classes]
     """
+    """
 
     Ystar = np.zeros((Y.shape[0], num_classes), dtype=int)
     n = Y.shape[0]
     for i in range(n):
-        Ystar[i, Y[i]] = 1
+        number  = Y[i]
+        Ystar =[i, number] = 1
     return Ystar
 
-
+    """
 
 
 
