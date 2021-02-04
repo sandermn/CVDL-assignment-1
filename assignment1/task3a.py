@@ -16,9 +16,8 @@ def cross_entropy_loss(targets: np.ndarray, outputs: np.ndarray):
     assert targets.shape == outputs.shape,\
         f"Targets shape: {targets.shape}, outputs: {outputs.shape}"
 
-    cel = -(targets * np.log(outputs) + (1 - targets) * np.log(1 - outputs))
+    cel =  np.sum((-np.sum(targets * np.log(outputs), axis=1)))
     cel = (1 / targets.shape[0]) * np.sum(cel)
-    # print(f'cee = {cee}')
     return cel
 
 
@@ -42,12 +41,8 @@ class SoftmaxModel:
             y: output of model with shape [batch size, num_outputs]
         """
 
-        z = X.dot(self.w)
-        y = np.zeros((X.shape[0], self.num_outputs))
-        sum_ = np.transpose(np.array([np.sum(np.exp(z), axis=1)]))
+        return np.divide(np.exp(X.dot(self.w)),np.transpose(np.array([np.sum(np.exp(X.dot(self.w)), axis=1)])))
 
-        y= np.divide(np.exp(z),sum_)
-        return y
 
 
 
