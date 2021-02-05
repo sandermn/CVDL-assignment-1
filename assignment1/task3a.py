@@ -30,7 +30,7 @@ class SoftmaxModel:
         # Define number of output nodes
         self.num_outputs = 10
         self.w = np.zeros((self.I, self.num_outputs))
-        self.grad = 2
+        self.grad = None
         self.l2_reg_lambda = l2_reg_lambda
 
     def forward(self, X: np.ndarray) -> np.ndarray:

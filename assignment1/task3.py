@@ -16,7 +16,6 @@ def calculate_accuracy(X: np.ndarray, targets: np.ndarray, model: SoftmaxModel) 
     Returns:
         Accuracy (float)
     """
-    # TODO: Implement this function (task 3c)
     accuracy = 0.0
     logits = model.forward(X)
     logits_max, targets_max = np.argmax(logits, axis=1), np.argmax(targets, axis=1)
@@ -38,7 +37,6 @@ class SoftmaxTrainer(BaseTrainer):
         Returns:
             loss value (float) on batch
         """
-        # TODO: Implement this function (task 3b)
         logits = self.model.forward(X_batch)
         self.model.backward(X_batch, logits, Y_batch)
         self.model.w = self.model.w - self.learning_rate*self.model.grad
@@ -130,18 +128,56 @@ if __name__ == "__main__":
     # You can finish the rest of task 4 below this point.
 
     # Plotting of softmax weights (Task 4b)
+
+    # Plotting for model
     weight = model.w
-    weight = np.reshape(weight, ((28,28), 10))
-    print(weight.shape)
-    plt.imsave("task4b_softmax_weight.png", weight, cmap="gray")
+    weight = weight[:784,]
+    b = np.zeros((10,28,28))
+    for i in range(weight.shape[1]):
+        b[i] = np.reshape(weight[:, i], (28,28))
+
+    b = np.transpose(b.reshape(280,-1))
+    plt.imsave("task4b_softmax_weight.png", b, cmap="gray")
+
+    # Plotting for model1
+    weight = model1.w
+    weight = weight[:784,]
+    b = np.zeros((10,28,28))
+    for i in range(weight.shape[1]):
+        b[i] = np.reshape(weight[:, i], (28,28))
+
+    b = np.transpose(b.reshape(280,-1))
+    plt.imsave("task4b_softmax_weight1.png", b, cmap="gray")
+
+
+    # Task 4c: Plotting of accuracy for difference values of lambdas
+    l2_lambdas = [1, .1, .01, .001]
+    
+    plt.ylim([0.89, .93])
+
+    models = {}
+
+    for ltl in l2_lambdas:
+        model = SoftmaxModel(ltl)
+        # Train model
+        trainer = SoftmaxTrainer(model, learning_rate, batch_size, shuffle_dataset, X_train, Y_train, X_val, Y_val)
+        train_history, val_history = trainer.train(num_epochs)
+        models[ltl] = np.sum(model.w**2)
+        utils.plot_loss(val_history["accuracy"], f"Validation Accuracy for lambda={ltl}")
+
+    plt.xlabel("Number of Training Steps")
+    plt.ylabel("Accuracy")
+    plt.legend()
+    plt.savefig("task4c_l2_reg_accuracy.png")
     plt.show()
 
-    # Plotting of accuracy for difference values of lambdas (task 4c)
-    l2_lambdas = [1, .1, .01, .001]
-    plt.savefig("task4c_l2_reg_accuracy.png")
+
+
     
 
-    # Task 4d - Plotting of the l2 norm for each weight
-
+    # Task 4d: Plotting of the l2 norm for each weight
+    plt.bar(np.arange(4), models.values())
+    plt.ylabel('L2 norm')
+    plt.xticks(np.arange(4), models.keys())
     plt.savefig("task4d_l2_reg_norms.png")
-
+    plt.show()
