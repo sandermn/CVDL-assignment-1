@@ -130,12 +130,18 @@ if __name__ == "__main__":
     # You can finish the rest of task 4 below this point.
 
     # Plotting of softmax weights (Task 4b)
-    #plt.imsave("task4b_softmax_weight.png", weight, cmap="gray")
+    weight = model.w
+    weight = np.reshape(weight, ((28,28), 10))
+    print(weight.shape)
+    plt.imsave("task4b_softmax_weight.png", weight, cmap="gray")
+    plt.show()
 
     # Plotting of accuracy for difference values of lambdas (task 4c)
     l2_lambdas = [1, .1, .01, .001]
     plt.savefig("task4c_l2_reg_accuracy.png")
+    
 
     # Task 4d - Plotting of the l2 norm for each weight
 
     plt.savefig("task4d_l2_reg_norms.png")
+

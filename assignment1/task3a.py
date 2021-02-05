@@ -44,8 +44,6 @@ class SoftmaxModel:
         return np.divide(np.exp(X.dot(self.w)),np.transpose(np.array([np.sum(np.exp(X.dot(self.w)), axis=1)])))
 
 
-
-
     def backward(self, X: np.ndarray, outputs: np.ndarray, targets: np.ndarray) -> None:
         """
         Computes the gradient and saves it to the variable self.grad
@@ -59,11 +57,12 @@ class SoftmaxModel:
         assert targets.shape == outputs.shape,\
             f"Output shape: {outputs.shape}, targets: {targets.shape}"
 
-        self.grad = (1 / targets.shape[0])*np.transpose(X).dot(-(targets - outputs))
+        self.grad = (1 / targets.shape[0])*(np.transpose(X).dot(-(targets - outputs)) + 2*self.l2_reg_lambda*self.w)
 
 
     def zero_grad(self) -> None:
         self.grad = None
+
 
 
 def one_hot_encode(Y: np.ndarray, num_classes: int):
