@@ -19,9 +19,8 @@ def calculate_accuracy(X: np.ndarray, targets: np.ndarray, model: SoftmaxModel) 
     # TODO: Implement this function (task 3c)
     accuracy = 0.0
     logits = model.forward(X)
-    logits = [(1 if l >= 0.5 else 0) for l in logits]
-    accuracy = (1/targets.shape[0])*np.sum([(1 if t == l else 0) for (t, l) in zip(targets, logits)])
-
+    logits_max, targets_max = np.argmax(logits, axis=1), np.argmax(targets, axis=1)
+    accuracy = (1/targets.shape[0])*np.sum([(1 if l == t else 0) for (l, t) in zip(logits_max, targets_max)])
     return accuracy
 
 
